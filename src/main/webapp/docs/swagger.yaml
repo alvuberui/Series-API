@@ -1,0 +1,772 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://proyecto-integracion-l4-g7.appspot.com/api/'
+info:
+  description: Series API es una API la cual sirve de buscador de series dando múltiples opciones para hacer más sencilla la búsqueda. Ya que nos permite mostrar todas las series existentes, ordenar por orden alfabético, filtrar por nombre o categoría, etc. Además, también permite mostrar el número de series o de capítulos en total que tienen, viendo su duración, fecha de lanzamiento, etc.
+  version: "1.0.0"
+  title: Series API
+  contact:
+    email: alvuberui@alum.us.es
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: chapters
+    description: chapters
+  - name: seasons
+    description: seasons
+  - name: series
+    description: series
+paths:
+  /chapters:
+    get:
+      tags: 
+      - chapters
+      summary: Get chapters
+      description: Get all chapters
+      operationId: getChapters
+      parameters:
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: isEmpty
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chapter'
+        '400':
+          description: Bad result
+    post:
+      tags:
+        - chapters
+      summary: Create a chapter
+      description: Create a chapter
+      operationId: addChapter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - duration
+              properties:
+                name:
+                  type: string
+                duration:
+                  type: string
+              example:
+                name: Rick y Morty Episodio 1
+                duration: "33"
+        description: Chapter to create
+        required: true
+      responses:
+        '201':
+          description: Chapter created
+          content:
+            application/json:
+              schema:
+                type: object
+              required:
+                - name
+                - duration
+              properties:
+                name:
+                  type: string
+                duration:
+                  type: string
+              example:
+                name: Rick y Morty Episodio 1
+                duration: "33"
+        '400':
+          description: Bad request
+    put:
+      tags:
+        - chapters
+      summary: Update a chapter
+      description: Update a chapter
+      operationId: updateChapter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - chapter
+              properties:
+                chapter:
+                  type: string
+                  items:
+                    type: object
+                    required:
+                      - chapter
+                    properties:
+                      chapter:
+                        type: string
+              example:
+                chapter: Sons of Anarchy Pilot
+        description: Chapter to update
+      responses:
+        '204':
+          description: Chapter updated
+        '400':
+          description: Bad request
+        '404':
+          description: Chapter not found  
+  '/chapters/{id}':
+    get:
+      tags: 
+      - chapters
+      summary: Get a chapter
+      description: Get a select chapter
+      operationId: getChapter
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chapter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        '400':
+          description: Chapter not found
+    delete:
+      tags: 
+      - chapters
+      summary: Delete a chapter
+      description: Delete a select chapter
+      operationId: removeChapter
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chapter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chapter'
+        '400':
+          description: Chapter not found
+  /seasons:
+    get:
+      tags: 
+      - seasons
+      summary: Get seasons
+      description: Get all seasons
+      operationId: getAllSeasonsFiltered
+      parameters:
+        - name: isEmpty
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serie'
+        '400':
+          description: Bad result  
+    post:
+      tags:
+        - seasons
+      summary: Create a season
+      description: Create a season
+      operationId: addSeason
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - year
+                - chapters
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                year:
+                  type: string
+                chapters:
+                  type: string
+              example:
+                name: Nombre de Temporada
+                description: Descripcion de la temporada
+                year: Año de la temporada
+                chapters: null
+        description: Season to create
+        required: true
+      responses:
+        '201':
+          description: Season created
+          content:
+            application/json:
+              schema:
+                type: object
+              required:
+                - name
+                - description
+                - year
+                - chapters
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                year:
+                  type: string
+                chapters:
+                  type: string
+              example:
+                name: Nombre de Temporada
+                description: Descripcion de la temporada
+                year: Año de la temporada
+                chapters: null
+        '400':
+          description: Bad request             
+    put:
+      tags:
+        - seasons
+      summary: Update a season
+      description: Update a season
+      operationId: updateSeason
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - season
+              properties:
+                season:
+                  type: string
+                  items:
+                    type: object
+                    required:
+                      - season
+                    properties:
+                      season:
+                        type: string
+              example:
+                season: Temporada dos
+        description: Season to update
+      responses:
+        '204':
+          description: Season updated
+        '400':
+          description: Bad request
+        '404':
+          description: Season not found           
+  '/seasons/{id}': 
+    get:
+      tags: 
+      - seasons
+      summary: Get a season
+      description: Get a select season
+      operationId: getSeasonId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Season
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Season'
+        '400':
+          description: Season not found    
+    delete:
+      tags: 
+      - seasons
+      summary: Delete a season
+      description: Delete a select season
+      operationId: removeSeason
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Season
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Season'
+        '400':
+          description: Season not found            
+  '/seasons/{seasonId}/{chapterId}':
+    post:
+      tags:
+        - seasons
+      summary: Add chapter to season
+      description: Add chapter to season
+      operationId: addChapterToSeason
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+      parameters:
+        - name: seasonId
+          in: path
+          description: Id of the season
+          required: true
+          schema:
+            type: string
+        - name: chapterId
+          in: path
+          description: Id of the chapter
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Chapter added to season
+          content:
+            application/json:
+              schema:
+                required:
+                  - seasonId
+                  - chapterId
+                properties:
+                  seasonId:
+                    type: string
+                  chapterId:
+                    type: string
+                    items:
+                      type: object
+                      required:
+                        - seasonId
+                      properties:
+                        seasonId:
+                          type: string
+                        chapterId:
+                          type: string
+                example:
+                  seasonId: h6
+                  description: My favourite serie
+                  chapterId: s3s
+        '400':
+          description: Bad request
+        '404':
+          description: Chapter or season not found    
+    delete:
+      tags:
+        - seasons
+      summary: Delete chapter from season
+      description: Delete chapter from season
+      operationId: removeChapterFromSeason
+      parameters:
+        - name: seasonId
+          in: path
+          description: Id of the season
+          required: true
+          schema:
+            type: string
+        - name: chapterId
+          in: path
+          description: Id of the chapter
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Chapter deleted from season
+        '404':
+          description: Chapter or season not found                 
+  /series:
+    get:
+      tags: 
+      - series
+      summary: Get series
+      description: Get all series
+      operationId: getAllSeriesFiltered
+      parameters:
+        - name: isEmpty
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serie'
+        '400':
+          description: Bad result
+    post:
+      tags:
+        - series
+      summary: Create a serie
+      description: Create a serie
+      operationId: addSerie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - seasons
+              properties:
+                name:
+                  type: string
+                seasons: 
+                  type: string
+              example:
+                name: La casa de papel
+                seasons: null
+        description: Serie to create
+        required: true
+      responses:
+        '201':
+          description: Serie created
+          content:
+            application/json:
+              schema:
+                type: object
+              required:
+                - name
+                - seasons
+              properties:
+                name:
+                  type: string
+                seasons: 
+                  type: string
+              example:
+                name: La casa de papel
+                seasons: null
+        '400':
+          description: Bad request    
+    put:
+      tags:
+        - series
+      summary: Update a serie
+      description: Update a serie
+      operationId: updateSerie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - serie
+              properties:
+                serie:
+                  type: string
+                  items:
+                    type: object
+                    required:
+                      - serie
+                    properties:
+                      serie:
+                        type: string
+              example:
+                chapter: Breaking Bad
+        description: Serie to update
+      responses:
+        '204':
+          description: Serie updated
+        '400':
+          description: Bad request
+        '404':
+          description: Serie not found              
+  '/series/{offset}/{limit}':
+    get:
+      tags: 
+      - series
+      summary: Get series filtered
+      operationId: getFilter
+      parameters:
+        - name: isEmpty
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: path
+          required: true
+          schema:
+            type: integer          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Serie'
+        '400':
+          description: Bad result
+  '/series/{id}':
+    get:
+      tags: 
+      - series
+      summary: Get a serie
+      description: Get a select serie
+      operationId: getSerieId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Serie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serie'
+        '400':
+          description: Serie not found  
+    delete:
+      tags: 
+      - series
+      summary: Delete a serie
+      description: Delete a select serie
+      operationId: removeSerie
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Serie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serie'
+        '400':
+          description: Serie not found            
+  '/series/{serieId}/{seasonId}':
+    post:
+      tags:
+        - series
+      summary: Add season to serie
+      description: Add season to serie
+      operationId: addSeasonToSerie
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+      parameters:
+        - name: serieId
+          in: path
+          description: Id of the serie
+          required: true
+          schema:
+            type: string
+        - name: seasonId
+          in: path
+          description: Id of the season
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Season added to serie
+          content:
+            application/json:
+              schema:
+                required:
+                  - serieId
+                  - seasonId
+                properties:
+                  serieId:
+                    type: string
+                  seasonId:
+                    type: string
+                    items:
+                      type: object
+                      required:
+                        - serieId
+                      properties:
+                        serieId:
+                          type: string
+                        seasonId:
+                          type: string
+                example:
+                  serieId: a5
+                  description: My favourite serie
+                  seasonId: s1
+        '400':
+          description: Bad request
+        '404':
+          description: Serie or season not found  
+    delete:
+      tags:
+        - series
+      summary: Delete season from serie
+      description: Delete season from serie
+      operationId: removeSeasonFromSerie
+      parameters:
+        - name: serieId
+          in: path
+          description: Id of the serie
+          required: true
+          schema:
+            type: string
+        - name: seasonId
+          in: path
+          description: Id of the season
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Season deleted from serie
+        '404':
+          description: Serie or season not found          
+components:
+  schemas:
+    Chapter:
+      type: object
+      required: 
+        - title
+        - duration
+      properties:
+        id: 
+          type: string
+        title:
+          type: string
+        duration:
+          type: string
+    Season:
+      type: object
+      required: 
+        - chapters
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        year:
+          type: string 
+        chapters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chapter'          
+    Serie:
+      type: object
+      required: 
+        - name
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
